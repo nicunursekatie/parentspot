@@ -552,61 +552,6 @@
             }
         }
 
-        function generateMaternalSummary(maternal) {
-            const parts = [];
-            
-            // Basic info
-            if (maternal.age) parts.push(`${maternal.age}yo`);
-            if (maternal.gravida && maternal.para) parts.push(`G${maternal.gravida}P${maternal.para}`);
-            if (maternal.livingChildren) parts.push(`Living children: ${maternal.livingChildren}`);
-            
-            // Delivery
-            if (maternal.deliveryType) {
-                let deliveryText = maternal.deliveryType;
-                
-                // Add delivery reasons
-                const reasons = [];
-                if (maternal.deliveryReasons?.preEclampsia) reasons.push('Pre-eclampsia');
-                if (maternal.deliveryReasons?.abruption) reasons.push('Abruption');
-                if (maternal.deliveryReasons?.pretermLabor) reasons.push('Preterm labor');
-                if (maternal.deliveryReasons?.pprom) reasons.push('PPROM');
-                if (maternal.deliveryReasons?.nrfht) reasons.push('NRFHT');
-                if (maternal.deliveryReasons?.reverseDoppler) reasons.push('Reverse doppler');
-                if (maternal.deliveryReasons?.hellp) reasons.push('HELLP');
-                if (maternal.deliveryReasons?.pih) reasons.push('PIH');
-                
-                if (reasons.length > 0) {
-                    deliveryText += ` for ${reasons.join(', ')}`;
-                }
-                
-                parts.push(deliveryText);
-            }
-            
-            // Conditions
-            const conditions = [];
-            if (maternal.conditions?.gdm) conditions.push('GDM');
-            if (maternal.conditions?.t1d) conditions.push('T1D');
-            if (maternal.conditions?.t2d) {
-                let t2d = 'T2D';
-                if (maternal.conditions?.insulinDependent) t2d += ' (insulin dependent)';
-                conditions.push(t2d);
-            }
-            if (maternal.conditions?.chtn) conditions.push('cHTN');
-            if (maternal.conditions?.pih) conditions.push('PIH');
-            if (maternal.conditions?.preEclampsia) {
-                let preE = 'Pre-eclampsia';
-                if (maternal.conditions?.severeFeatures) preE += ' with severe features';
-                conditions.push(preE);
-            }
-            if (maternal.conditions?.hellp) conditions.push('HELLP');
-            
-            if (conditions.length > 0) {
-                parts.push(`Conditions: ${conditions.join(', ')}`);
-            }
-            
-            return parts.length > 0 ? parts.join(' | ') : 'No data entered';
-        }
-
         /* Utilities */
         .hidden {
             display: none !important;
