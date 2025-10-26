@@ -334,16 +334,9 @@
         <!-- Shift Setup Screen -->
         <div class="setup-screen active" id="setupScreen">
             <div class="content">
-                <h2>Start Your Shift</h2>
-                <div class="form-group">
-                    <label for="shiftStart">Select Standard Touch Time Schedule:</label>
-                    <select id="shiftStart">
-                        <option value="08:00">8:00 AM Schedule</option>
-                        <option value="08:30" selected>8:30 AM Schedule</option>
-                        <option value="09:00">9:00 AM Schedule</option>
-                    </select>
-                </div>
-                <button class="btn" onclick="startShift()">Start Shift</button>
+                <h2>Welcome to NICU Shift Tracker</h2>
+                <p style="margin-bottom: 2rem;">Each baby will have their own individual touch time schedule.</p>
+                <button class="btn" onclick="startShift()">Start Tracking</button>
                 
                 <div style="margin-top: 2rem;">
                     <button class="btn btn-secondary" onclick="loadPreviousShift()">Load Previous Shift</button>
@@ -398,6 +391,15 @@
                     <label>Days of Life (auto-calculated):</label>
                     <input type="text" id="babyDOL" placeholder="Will calculate from GA" readonly style="background: #f0f0f0;">
                 </div>
+                <div class="form-group">
+                    <label>Touch Time Schedule:</label>
+                    <select id="babyTouchSchedule">
+                        <option value="08:00">8:00, 11:00, 14:00, 17:00</option>
+                        <option value="08:30" selected>8:30, 11:30, 14:30, 17:30</option>
+                        <option value="09:00">9:00, 12:00, 15:00, 18:00</option>
+                        <option value="custom">Custom Times (enter manually)</option>
+                    </select>
+                </div>
                 <button class="btn" onclick="addBaby()">Add Baby</button>
                 <button class="btn btn-secondary" onclick="closeModal('addBabyModal')">Cancel</button>
             </div>
@@ -430,9 +432,7 @@
         
         // Start Shift
         function startShift() {
-            const shiftStart = document.getElementById('shiftStart').value;
-            appState.shiftStart = shiftStart;
-            appState.touchTimes = generateTouchTimes(shiftStart);
+            appState.shiftStart = new Date().toLocaleTimeString();
             
             document.getElementById('setupScreen').classList.remove('active');
             document.getElementById('mainScreen').classList.add('active');
@@ -456,8 +456,8 @@
         
         // Update Shift Display
         function updateShiftDisplay() {
-            document.getElementById('shiftTimeDisplay').textContent = appState.shiftStart;
-            document.getElementById('touchTimesDisplay').textContent = appState.touchTimes.join(' → ');
+            document.getElementById('shiftTimeDisplay').textContent = appState.shiftStart || 'Not started';
+            document.getElementById('touchTimesDisplay').textContent = `Track ${appState.babies.length} baby/babies`;
         }
         
         // Calculate Days of Life from GA difference
@@ -489,9 +489,11 @@
             // Auto-suggest next baby number
             const nextNumber = appState.babies.length + 1;
             document.getElementById('babyName').value = `Baby ${nextNumber}`;
+            document.getElementById('babyBed').value = '';
             document.getElementById('babyGA').value = '';
             document.getElementById('babyCGA').value = '';
             document.getElementById('babyDOL').value = '';
+            document.getElementById('babyTouchSchedule').value = '08:30';
             document.getElementById('addBabyModal').classList.add('active');
         }
         
@@ -502,6 +504,10 @@
         
         // Add Baby
         function addBaby() {
+            // Get selected touch time schedule
+            const scheduleSelect = document.getElementById('babyTouchSchedule').value;
+            const babyTouchTimes = generateTouchTimes(scheduleSelect);
+            
             const baby = {
                 id: Date.now(),
                 name: document.getElementById('babyName').value,
@@ -509,6 +515,7 @@
                 ga: document.getElementById('babyGA').value,
                 dol: document.getElementById('babyDOL').value,
                 cga: document.getElementById('babyCGA').value,
+                touchTimes: babyTouchTimes, // Each baby has their own touch times
                 reportSheet: {
                     maternalHistory: '',
                     currentProblems: '',
@@ -539,8 +546,8 @@
                 events: []
             };
             
-            // Initialize touch time logs
-            appState.touchTimes.forEach(time => {
+            // Initialize touch time logs based on this baby's schedule
+            baby.touchTimes.forEach(time => {
                 baby.touchTimeLogs[time] = {
                     complete: false,
                     temp: '',
@@ -1147,20 +1154,20 @@
                     
                     <!-- Touch Times Section -->
                     <div class="touch-times">
-                        <h3>Touch Times</h3>
-                        ${appState.touchTimes.map(time => `
+                        <h3>Touch Times: ${baby.touchTimes ? baby.touchTimes.join(' → ') : 'Schedule not set'}</h3>
+                        ${baby.touchTimes ? baby.touchTimes.map(time => `
                             <div class="touch-time-card">
                                 <div class="touch-time-header">
                                     <span class="touch-time-label">${time}</span>
-                                    <span class="touch-time-status ${baby.touchTimeLogs[time].complete ? 'status-complete' : 'status-pending'}">
-                                        ${baby.touchTimeLogs[time].complete ? 'Complete' : 'Pending'}
+                                    <span class="touch-time-status ${baby.touchTimeLogs[time] && baby.touchTimeLogs[time].complete ? 'status-complete' : 'status-pending'}">
+                                        ${baby.touchTimeLogs[time] && baby.touchTimeLogs[time].complete ? 'Complete' : 'Pending'}
                                     </span>
                                 </div>
                                 <button class="btn btn-secondary" style="margin-top: 0.5rem;" onclick="openTouchTimeModal('${time}')">
-                                    ${baby.touchTimeLogs[time].complete ? 'Edit' : 'Log'} Touch Time
+                                    ${baby.touchTimeLogs[time] && baby.touchTimeLogs[time].complete ? 'Edit' : 'Log'} Touch Time
                                 </button>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p>No touch times set for this baby</p>'}
                     </div>
                     
                     <!-- Events Section -->
@@ -1689,8 +1696,7 @@
         // Export Shift Report
         function exportShiftReport() {
             let report = `NICU Shift Report\n`;
-            report += `Shift: ${appState.shiftStart}\n`;
-            report += `Touch Times: ${appState.touchTimes.join(' → ')}\n`;
+            report += `Shift Started: ${appState.shiftStart}\n`;
             report += `Generated: ${new Date().toLocaleString()}\n`;
             report += `${'='.repeat(50)}\n\n`;
             
@@ -1698,6 +1704,7 @@
                 report += `BABY: ${baby.name}\n`;
                 if (baby.bed) report += `Notes: ${baby.bed}\n`;
                 report += `GA: ${baby.ga} | CGA: ${baby.cga} | DOL: ${baby.dol}\n`;
+                report += `Touch Time Schedule: ${baby.touchTimes ? baby.touchTimes.join(' → ') : 'Not set'}\n`;
                 report += `\nREPORT SHEET:\n`;
                 report += `Maternal History: ${baby.reportSheet.maternalHistory}\n`;
                 report += `Current Problems: ${baby.reportSheet.currentProblems}\n`;
@@ -1707,16 +1714,18 @@
                 report += `Plan: ${baby.reportSheet.plan}\n`;
                 
                 report += `\nTOUCH TIMES:\n`;
-                appState.touchTimes.forEach(time => {
-                    const log = baby.touchTimeLogs[time];
-                    if (log.complete) {
-                        report += `${time}: T:${log.temp} HR:${log.hr} RR:${log.rr} SpO2:${log.spo2}\n`;
-                        report += `  Feed: ${log.feed}, Diaper: ${log.diaper}\n`;
-                        if (log.comments) report += `  Comments: ${log.comments}\n`;
-                    } else {
-                        report += `${time}: Not completed\n`;
-                    }
-                });
+                if (baby.touchTimes) {
+                    baby.touchTimes.forEach(time => {
+                        const log = baby.touchTimeLogs[time];
+                        if (log && log.complete) {
+                            report += `${time}: T:${log.temp} HR:${log.hr} RR:${log.rr} SpO2:${log.spo2}\n`;
+                            report += `  Feed: ${log.feed}, Diaper: ${log.diaper}\n`;
+                            if (log.comments) report += `  Comments: ${log.comments}\n`;
+                        } else {
+                            report += `${time}: Not completed\n`;
+                        }
+                    });
+                }
                 
                 if (baby.events.length > 0) {
                     report += `\nEVENTS:\n`;
