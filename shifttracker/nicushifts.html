@@ -13,8 +13,8 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            background: #fff0f8;
+            color: #2d3748;
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -26,13 +26,13 @@
         }
         
         .header {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #ff69b4, #4a90e2);
             color: white;
             padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(255, 105, 180, 0.2);
         }
         
         .header h1 {
@@ -41,7 +41,7 @@
         }
         
         .shift-info {
-            background: #34495e;
+            background: #4a90e2;
             color: white;
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
@@ -81,7 +81,7 @@
         
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #ff69b4;
         }
         
         textarea {
@@ -90,7 +90,7 @@
         }
         
         .btn {
-            background: #3498db;
+            background: linear-gradient(135deg, #ff69b4, #4a90e2);
             color: white;
             padding: 0.75rem 1.5rem;
             border: none;
@@ -99,28 +99,30 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
         
         .btn:hover {
-            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
         }
         
         .btn-secondary {
-            background: #95a5a6;
+            background: #ffd93d;
+            color: #2d3748;
         }
         
         .btn-secondary:hover {
-            background: #7f8c8d;
+            background: #ffcc00;
         }
         
         .btn-add {
-            background: #27ae60;
+            background: #4ecdc4;
             margin-top: 1rem;
         }
         
         .btn-add:hover {
-            background: #229954;
+            background: #38b5b5;
         }
         
         .tabs {
@@ -144,17 +146,17 @@
         }
         
         .tab.active {
-            border-bottom-color: #3498db;
-            color: #3498db;
+            border-bottom-color: #ff69b4;
+            color: #ff69b4;
             font-weight: 600;
         }
         
         .baby-card {
-            background: #f8f9fa;
+            background: #fff0f8;
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(255, 105, 180, 0.1);
         }
         
         .baby-header {
@@ -167,12 +169,12 @@
         .baby-name {
             font-size: 1.2rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: #ff69b4;
         }
         
         .baby-info {
             font-size: 0.9rem;
-            color: #7f8c8d;
+            color: #6b5f67;
         }
         
         .touch-times {
@@ -181,7 +183,7 @@
         
         .touch-time-card {
             background: white;
-            border: 2px solid #ecf0f1;
+            border: 2px solid #ffb6e1;
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 0.75rem;
@@ -196,7 +198,7 @@
         
         .touch-time-label {
             font-weight: 600;
-            color: #2c3e50;
+            color: #4a90e2;
         }
         
         .touch-time-status {
@@ -208,12 +210,12 @@
         }
         
         .status-pending {
-            background: #f39c12;
-            color: white;
+            background: #ffd93d;
+            color: #2d3748;
         }
         
         .status-complete {
-            background: #27ae60;
+            background: #4ecdc4;
             color: white;
         }
         
@@ -222,7 +224,7 @@
         }
         
         .accordion-header {
-            background: #ecf0f1;
+            background: #f4d8e6;
             padding: 0.75rem;
             border-radius: 8px;
             cursor: pointer;
@@ -230,7 +232,7 @@
             justify-content: space-between;
             align-items: center;
             font-weight: 600;
-            color: #2c3e50;
+            color: #ff69b4;
         }
         
         .accordion-content {
