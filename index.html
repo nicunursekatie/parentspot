@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NICU Medical Terms - Detailed Guide</title>
+    <title>NICU Parent Guide - Real Support from a NICU Nurse</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,6 @@
             --border-color: #ffb6e1;
             --success: #4ecdc4;
             --warning: #ff6b6b;
-            --info: #a8e6cf;
             --shadow: 0 2px 4px rgba(255, 105, 180, 0.1);
             --shadow-lg: 0 10px 25px rgba(255, 105, 180, 0.15);
         }
@@ -35,7 +34,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -56,6 +55,108 @@
             margin-bottom: 10px;
         }
 
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        nav {
+            background: var(--bg-white);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav button {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid transparent;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        nav button:focus {
+            outline: 3px solid var(--secondary-color);
+            outline-offset: 2px;
+        }
+
+        nav button:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        nav button.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .no-results {
+            display: none;
+            background: var(--bg-white);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .card {
             background: var(--bg-white);
             border-radius: 10px;
@@ -72,1294 +173,870 @@
             border-bottom: 3px solid var(--accent-color);
         }
 
-        .terms-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
+        h3 {
+            color: var(--text-dark);
+            font-size: 1.3em;
+            margin: 20px 0 15px 0;
+            font-weight: 600;
         }
 
-        .term-card {
-            background: var(--bg-light);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+        h4 {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-left: 4px solid var(--secondary-color);
             padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
+            margin: 20px 0;
+            border-radius: 5px;
         }
 
-        .term-card:hover {
-            border-color: var(--secondary-color);
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        .term-card h3 {
+        .highlight-box h4 {
+            margin-top: 0;
             color: var(--primary-color);
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .term-card .brief {
-            color: var(--text-light);
-            font-size: 0.95em;
-            line-height: 1.5;
-        }
-
-        .term-card .click-hint {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: var(--accent-color);
-            font-size: 0.85em;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .term-card:hover .click-hint {
-            opacity: 1;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--bg-white);
-            border-radius: 12px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 25px;
-            border-radius: 12px 12px 0 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .modal-header h2 {
-            color: white;
-            border: none;
-            margin: 0;
-            padding: 0;
-            font-size: 1.8em;
-        }
-
-        .modal-header .pronunciation {
-            font-size: 0.95em;
-            opacity: 0.9;
-            margin-top: 5px;
-            font-style: italic;
-        }
-
-        .modal-body {
-            padding: 25px;
-        }
-
-        .modal-section {
-            margin-bottom: 25px;
-        }
-
-        .modal-section h3 {
-            color: var(--primary-color);
-            font-size: 1.2em;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .modal-section h3::before {
-            content: "▸";
-            color: var(--accent-color);
-        }
-
-        .info-box {
-            background: #f0f9ff;
-            border-left: 4px solid var(--info);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-
-        .warning-box {
-            background: #fef2f2;
-            border-left: 4px solid var(--warning);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-
-        .success-box {
-            background: #f0fdf4;
-            border-left: 4px solid var(--success);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-
-        .close-button {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            background: rgba(255,255,255,0.2);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s ease;
-        }
-
-        .close-button:hover {
-            background: rgba(255,255,255,0.3);
         }
 
         ul {
             margin-left: 20px;
-            margin-top: 10px;
+            margin-bottom: 15px;
         }
 
         li {
             margin-bottom: 8px;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
-        .normal-ranges {
+        .term-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .term-item {
             background: var(--bg-light);
             padding: 15px;
             border-radius: 8px;
-            margin: 15px 0;
+            border: 1px solid var(--border-color);
         }
 
-        .normal-ranges h4 {
+        .term-item strong {
             color: var(--primary-color);
-            margin-bottom: 10px;
+            display: block;
+            margin-bottom: 5px;
             font-size: 1.05em;
         }
 
-        .range-item {
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quick-button {
+            background: var(--bg-white);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-button:hover {
+            border-color: var(--secondary-color);
+            background: var(--bg-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-button .emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .permission-list {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .permission-list h4 {
+            color: var(--success);
+            margin-bottom: 15px;
+        }
+
+        .permission-list li {
+            list-style: none;
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .permission-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: #ffeef0;
+            border: 1px solid #ffb3ba;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .accordion {
+            margin: 20px 0;
+        }
+
+        .accordion-item {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 15px 20px;
+            background: var(--bg-light);
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            transition: background 0.3s ease;
         }
 
-        .range-item:last-child {
-            border-bottom: none;
+        .accordion-header:hover {
+            background: #e2e8f0;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .accordion-header:focus {
+            outline: 3px solid var(--secondary-color);
+            outline-offset: -2px;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .accordion-header h4 {
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .accordion-header .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-content {
+            padding: 20px;
+            max-height: 1000px;
+        }
+
+        .accordion-item.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .back-to-top:focus {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--text-dark);
+            color: white;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+        }
+
+        .skip-link:focus {
+            top: 0;
         }
 
         @media (max-width: 768px) {
-            .modal-content {
-                width: 95%;
-                margin: 20px;
+            h1 {
+                font-size: 2em;
             }
             
-            .terms-grid {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .quick-access {
                 grid-template-columns: 1fr;
+            }
+
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-dark: #faeff5;
+                --text-light: #f4d8e6;
+                --bg-light: #2d1f26;
+                --bg-white: #3a2d35;
+                --border-color: #5a4854;
+            }
+            
+            body {
+                background: #1f161a;
+            }
+            
+            .highlight-box {
+                background: linear-gradient(135deg, #3a2d35, #2d1f26);
+            }
+            
+            .permission-list {
+                background: #1a3022;
+                border-color: #6d9b7d;
+            }
+            
+            .warning-box {
+                background: #3d2d1f;
+                border-color: #c49a6a;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <div class="container">
         <header>
-            <h1>NICU Medical Terms Explained</h1>
-            <p>Click any term for detailed explanation and what it means for your baby</p>
+            <h1>NICU Parent Resource Guide</h1>
+            <p class="tagline">Real support from a NICU nurse who understands what you're going through</p>
         </header>
 
-        <div class="card">
-            <h2>Common Medical Terms</h2>
-            <div class="terms-grid" id="termsGrid"></div>
+        <nav aria-label="Main navigation">
+            <ul>
+                <button class="active" onclick="showSection('start-here')" aria-label="Go to Start Here section">🏥 Start Here</button>
+                <button onclick="showSection('medical')" aria-label="Go to Medical Stuff section">📋 Medical Stuff</button>
+                <button onclick="showSection('daily-life')" aria-label="Go to Daily Life section">🍼 Daily Life</button>
+                <button onclick="showSection('emotional')" aria-label="Go to Emotional Support section">💙 Emotional Support</button>
+                <button onclick="showSection('ask-nurse')" aria-label="Go to Ask a Nurse section">👩‍⚕️ Ask a Nurse</button>
+                <button onclick="showSection('going-home')" aria-label="Go to Going Home section">🏠 Going Home</button>
+            </ul>
+        </nav>
+
+        <div class="search-box">
+            <input type="search" id="search-input" placeholder="Search topics, terms, or questions..." aria-label="Search content">
         </div>
+
+        <div id="no-results" class="no-results">
+            <h3>No results found</h3>
+            <p>Try different search terms or browse the sections above.</p>
+        </div>
+
+        <!-- Start Here Section -->
+        <div id="start-here" class="section active">
+            <div class="card">
+                <h2>Your First Week in the NICU</h2>
+                
+                <div class="highlight-box">
+                    <h4>The Only Three Things That Matter Today:</h4>
+                    <ul style="list-style: none; margin-left: 0;">
+                        <li>1. Your baby is in expert hands</li>
+                        <li>2. You're allowed to feel however you feel</li>
+                        <li>3. Taking care of yourself isn't selfish—it's necessary</li>
+                    </ul>
+                </div>
+
+                <h3>Day 1: Just Survive</h3>
+                
+                <h4>Essential Information</h4>
+                <ul>
+                    <li><strong>Your baby's nurse</strong> is your primary resource—ask them anything</li>
+                    <li><strong>Write everything down</strong>—you won't remember details later</li>
+                    <li><strong>Take photos</strong> of equipment settings and your baby's space for reference</li>
+                    <li><strong>It's okay to leave</strong> when you need to rest or eat</li>
+                </ul>
+
+                <h4>Basic NICU Orientation</h4>
+                <ul>
+                    <li><strong>Handwashing:</strong> The 3-minute scrub is required on first entry; regular washing thereafter</li>
+                    <li><strong>Visiting:</strong> Most NICUs allow 24/7 parent access (confirm your unit's policy)</li>
+                    <li><strong>Phone updates:</strong> You can call anytime—have your baby's medical record number ready</li>
+                    <li><strong>Rounds:</strong> Usually occur between 8-11am; parents are typically welcome</li>
+                </ul>
+
+                <div class="permission-list">
+                    <h4>You Have Permission To:</h4>
+                    <ul>
+                        <li>Feel overwhelmed, numb, or nothing at all</li>
+                        <li>Go home and sleep in your own bed</li>
+                        <li>Eat regular meals</li>
+                        <li>Cry in the parking lot (or anywhere else)</li>
+                        <li>Not understand everything right away</li>
+                        <li>Ask the same question multiple times</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Section -->
+        <div id="medical" class="section">
+            <div class="card">
+                <h2>Understanding Medical Terms & Equipment</h2>
+                
+                <h3>Common Terms You'll Hear</h3>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <strong>Brady (Bradycardia)</strong>
+                        Heart rate drops below normal range - usually self-resolves
+                    </div>
+                    <div class="term-item">
+                        <strong>Desat (Desaturation)</strong>
+                        Oxygen levels drop temporarily - very common in preemies
+                    </div>
+                    <div class="term-item">
+                        <strong>Apnea</strong>
+                        Pause in breathing for 20+ seconds - monitors will alert immediately
+                    </div>
+                    <div class="term-item">
+                        <strong>Residuals</strong>
+                        Leftover milk in stomach at next feeding - helps assess feeding tolerance
+                    </div>
+                    <div class="term-item">
+                        <strong>NPO</strong>
+                        Nothing by mouth - baby temporarily can't have feeds
+                    </div>
+                    <div class="term-item">
+                        <strong>CPAP/BIPAP</strong>
+                        Breathing support that helps keep lungs open - not the same as a ventilator
+                    </div>
+                </div>
+
+                <h3>Equipment Basics</h3>
+                <div class="accordion" role="region" aria-label="Equipment information">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>Monitors & Alarms</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li><strong>Yellow alarms:</strong> Usually minor - staff aware but not urgent</li>
+                                <li><strong>Red alarms:</strong> Need attention - nurse will respond quickly</li>
+                                <li><strong>Frequent alarms:</strong> Normal in NICU - your baby is being closely watched</li>
+                                <li><strong>Heart rate (HR):</strong> Usually 120-160 for babies</li>
+                                <li><strong>Oxygen saturation (SpO2):</strong> Target varies by baby's condition</li>
+                                <li><strong>Respiratory rate (RR):</strong> Usually 30-60 breaths per minute</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>Breathing Support</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li><strong>Room air:</strong> No oxygen support needed</li>
+                                <li><strong>Nasal cannula:</strong> Small amount of oxygen through nose tubes</li>
+                                <li><strong>CPAP:</strong> Continuous pressure to keep lungs open</li>
+                                <li><strong>Ventilator:</strong> Machine breathes for baby when needed</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>Feeding Equipment</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li><strong>NG/OG tube:</strong> Feeding tube through nose or mouth to stomach</li>
+                                <li><strong>TPN/Lipids:</strong> IV nutrition when baby can't digest milk yet</li>
+                                <li><strong>Gavage feeding:</strong> Tube feeding (same as NG/OG feeding)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Life Section -->
+        <div id="daily-life" class="section">
+            <div class="card">
+                <h2>Daily NICU Life & Participation</h2>
+                
+                <h3>Your Role in Baby's Care</h3>
+                <ul>
+                    <li><strong>Diaper changes:</strong> Most parents can start helping immediately</li>
+                    <li><strong>Temperature checks:</strong> Learn to help with routine cares</li>
+                    <li><strong>Mouth care:</strong> Comfort for babies on breathing support</li>
+                    <li><strong>Holding:</strong> When medically stable (ask your nurse)</li>
+                    <li><strong>Feeding:</strong> Bottle or breast when baby is ready</li>
+                    <li><strong>Bathing:</strong> Usually weekly, great bonding opportunity</li>
+                </ul>
+
+                <h3>Pumping & Feeding</h3>
+                <div class="highlight-box">
+                    <h4>Pumping Reality Check</h4>
+                    <ul>
+                        <li>Every 2-3 hours is ideal, but do what you can manage</li>
+                        <li>Supply drops are normal during stress</li>
+                        <li>Any amount helps—don't compare to others</li>
+                        <li>Hospital-grade pumps make a difference</li>
+                        <li>Insurance often covers pump rental</li>
+                    </ul>
+                </div>
+
+                <h3>What You Can Bring</h3>
+                <ul>
+                    <li><strong>Clothes:</strong> Once baby is stable (ask first)</li>
+                    <li><strong>Blankets:</strong> Small receiving blankets from home</li>
+                    <li><strong>Pictures:</strong> Family photos for the incubator</li>
+                    <li><strong>Music:</strong> Quiet music or recordings of your voice</li>
+                    <li><strong>Comfort items:</strong> Small stuffed animals (check with nurse)</li>
+                </ul>
+
+                <h3>Sample Daily Routine</h3>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <strong>8:00 AM</strong>
+                        Rounds - great time to hear the plan
+                    </div>
+                    <div class="term-item">
+                        <strong>9:00 AM</strong>
+                        Hands-on care time (diaper, temp, position)
+                    </div>
+                    <div class="term-item">
+                        <strong>12:00 PM</strong>
+                        Another care time - possible holding
+                    </div>
+                    <div class="term-item">
+                        <strong>3:00 PM</strong>
+                        Care time - practice feeding if ready
+                    </div>
+                    <div class="term-item">
+                        <strong>6:00 PM</strong>
+                        Evening cares - bath day?
+                    </div>
+                    <div class="term-item">
+                        <strong>9:00 PM</strong>
+                        Night cares - quiet bonding time
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emotional Support Section -->
+        <div id="emotional" class="section">
+            <div class="card">
+                <h2>Emotional Support & Coping</h2>
+                
+                <div class="highlight-box">
+                    <h4>This Is Trauma</h4>
+                    <p>Having a baby in the NICU is a traumatic experience. Your feelings—whatever they are—are valid and normal. You don't need to be grateful, positive, or strong all the time.</p>
+                </div>
+
+                <h3>Common Feelings (All Normal)</h3>
+                <div class="permission-list">
+                    <h4>It's Normal To Feel:</h4>
+                    <ul>
+                        <li>Disconnected from your baby</li>
+                        <li>Jealous of parents with healthy babies</li>
+                        <li>Angry at your body</li>
+                        <li>Guilty about everything and nothing</li>
+                        <li>Numb or emotionally flat</li>
+                        <li>Terrified one moment, hopeful the next</li>
+                        <li>Resentful of the NICU routine</li>
+                        <li>Like a visitor instead of a parent</li>
+                    </ul>
+                </div>
+
+                <h3>Coping Strategies That Actually Help</h3>
+                <ul>
+                    <li><strong>Take breaks:</strong> Leaving doesn't make you a bad parent</li>
+                    <li><strong>Limit updates:</strong> Designate one person to update others</li>
+                    <li><strong>Set boundaries:</strong> It's okay to say no to visitors</li>
+                    <li><strong>Find YOUR routine:</strong> Don't compare to other NICU parents</li>
+                    <li><strong>Document when ready:</strong> Photos/journals can help process</li>
+                    <li><strong>Seek support:</strong> NICU PTSD is real—therapy helps</li>
+                </ul>
+
+                <h3>Partner Dynamics</h3>
+                <ul>
+                    <li>You might cope completely differently—that's normal</li>
+                    <li>Take turns being the "strong one"</li>
+                    <li>Communicate needs directly—mind reading doesn't work in crisis</li>
+                    <li>Divide responsibilities based on strengths</li>
+                    <li>Respect each other's processing styles</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>When to Seek Immediate Support</h4>
+                    <ul>
+                        <li>Thoughts of harming yourself or others</li>
+                        <li>Unable to eat or sleep for multiple days</li>
+                        <li>Panic attacks or severe anxiety</li>
+                        <li>Feeling disconnected from reality</li>
+                        <li>Substance use to cope</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ask a Nurse Section -->
+        <div id="ask-nurse" class="section">
+            <div class="card">
+                <h2>Ask a NICU Nurse</h2>
+                
+                <div class="highlight-box">
+                    <h4>Get Real Answers</h4>
+                    <p>Submit your questions anonymously and get honest, practical answers from experienced NICU nurses. We can't give medical advice about your specific baby, but we can help you understand NICU life and what questions to ask your team.</p>
+                </div>
+
+                <h3>Frequently Asked Questions</h3>
+                
+                <div class="accordion" role="region" aria-label="Frequently asked questions">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>Why can't I hold my baby yet?</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>Babies need to be medically stable for holding. This usually means stable breathing, heart rate, and temperature. Every baby is different—some can be held right away, others need more time. Your nurse will let you know when it's safe.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>Why do different nurses do things differently?</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>While medical care is standardized, comfort techniques vary. Each nurse has their own successful methods for calming, positioning, and caring for babies. As long as medical protocols are followed, these variations are normal and actually beneficial—your baby gets exposed to different effective techniques.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>Is it my fault my baby is here?</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>No. Full stop. Prematurity and NICU admissions happen for countless reasons, most completely out of your control. Even if you had pregnancy complications, that doesn't mean you caused them. Your baby is getting the care they need, and that's what matters now.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)" role="button" aria-expanded="false" tabindex="0">
+                            <h4>When will my baby come home?</h4>
+                            <span class="arrow" aria-hidden="true">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <p>The "due date guideline" is just that—a guideline. Discharge depends on: feeding all bottles/breast, maintaining temperature, breathing without support, and gaining weight consistently. Some babies go home before their due date, others after. Your baby will show you when they're ready.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Submit Your Question</h3>
+                <div class="highlight-box">
+                    <p><strong>Coming Soon:</strong> Anonymous question submission form. Your questions help us build better resources for all NICU families.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Going Home Section -->
+        <div id="going-home" class="section">
+            <div class="card">
+                <h2>Preparing for Discharge</h2>
+                
+                <h3>Signs You're Getting Close</h3>
+                <ul>
+                    <li>Baby is taking all feeds by mouth</li>
+                    <li>Maintaining temperature in an open crib</li>
+                    <li>No breathing support needed</li>
+                    <li>Steady weight gain</li>
+                    <li>No bradys/desats for several days</li>
+                </ul>
+
+                <h3>Discharge Checklist</h3>
+                <div class="term-grid">
+                    <div class="term-item">
+                        <strong>Medical Tasks</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Car seat test completed</li>
+                            <li>Hearing screen passed</li>
+                            <li>Eye exam (if needed)</li>
+                            <li>Medications understood</li>
+                            <li>Follow-up appointments scheduled</li>
+                        </ul>
+                    </div>
+                    <div class="term-item">
+                        <strong>Parent Education</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>CPR certification</li>
+                            <li>Safe sleep practices</li>
+                            <li>Feeding plan clear</li>
+                            <li>Equipment training (if needed)</li>
+                            <li>Emergency plan reviewed</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Questions to Ask Before Leaving</h3>
+                <ul>
+                    <li>What's our feeding schedule and volume?</li>
+                    <li>When do we call the doctor vs emergency room?</li>
+                    <li>What medications and when?</li>
+                    <li>When is our first appointment?</li>
+                    <li>Any restrictions (visitors, going out)?</li>
+                    <li>Signs to watch for at home?</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <h4>The Weird Feelings About Leaving</h4>
+                    <p>It's normal to feel terrified about discharge. You're leaving your safety net. Many parents feel guilty about "abandoning" their NICU nurses or sad about leaving this intense chapter behind. These mixed emotions are completely normal.</p>
+                </div>
+
+                <h3>After NICU: The Fourth Trimester (Adjusted)</h3>
+                <ul>
+                    <li><strong>Use adjusted age</strong> for milestones until age 2</li>
+                    <li><strong>Extra vigilant</strong> about germs is appropriate</li>
+                    <li><strong>Sleep anxiety</strong> is common—consider a monitor for peace of mind</li>
+                    <li><strong>NICU follow-up clinic</strong> will track development</li>
+                    <li><strong>Early intervention</strong> services may be recommended</li>
+                    <li><strong>NICU PTSD</strong> can emerge after discharge—get support</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Disclaimer:</strong> This guide provides general information and peer support. Always consult your medical team about your baby's specific needs.</p>
+            <p>Created by a NICU nurse who gets it. You're not alone.</p>
+        </footer>
     </div>
 
-    <!-- Modal Template -->
-    <div id="termModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close-button">&times;</span>
-                <h2 id="modalTitle"></h2>
-                <div class="pronunciation" id="modalPronunciation"></div>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Content will be dynamically inserted here -->
-            </div>
-        </div>
-    </div>
+    <button class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">↑</button>
 
     <script>
-        const medicalTerms = [
-            {
-                term: "Bradycardia (Brady)",
-                pronunciation: "brad-ee-CAR-dee-ah",
-                brief: "Heart rate drops below normal range - usually self-resolves",
-                sections: [
-                    {
-                        title: "What It Is",
-                        content: `Bradycardia means your baby's heart rate has dropped below their normal range. For premature infants, this is incredibly common and usually not dangerous. The monitor will alarm (usually yellow) when the heart rate drops below the set parameter, which varies based on your baby's gestational age and condition.`,
-                        normalRanges: {
-                            title: "Normal Heart Rate Ranges",
-                            items: [
-                                { label: "Full-term newborns", value: "120-160 bpm" },
-                                { label: "Premature infants", value: "140-170 bpm" },
-                                { label: "Brady threshold", value: "Usually <80-100 bpm" }
-                            ]
-                        }
-                    },
-                    {
-                        title: "Why It Happens in Preemies",
-                        content: `The nervous system that controls heart rate is still developing in premature babies. Think of it like a computer that occasionally needs a restart. Common triggers include:`,
-                        list: [
-                            "Deep sleep (most common and least concerning)",
-                            "Vagal response during feeding or pooping",
-                            "Position changes or being handled",
-                            "Reflux or milk coming back up",
-                            "Coordination issues between breathing and heart rate",
-                            "Overstimulation or stress"
-                        ]
-                    },
-                    {
-                        title: "How We Help",
-                        content: `Most bradys resolve on their own within seconds. When intervention is needed:`,
-                        list: [
-                            "<strong>Gentle stimulation:</strong> Light rubbing of back, feet, or head",
-                            "<strong>Position change:</strong> Simply repositioning often helps",
-                            "<strong>Pause feeding:</strong> If happening during bottles/breastfeeding",
-                            "<strong>Reduce stimulation:</strong> If baby is overwhelmed",
-                            "<strong>Medication:</strong> Caffeine is commonly used for frequent bradys"
-                        ],
-                        infoBox: `<strong>Self-resolving bradys</strong> (baby fixes it themselves) are the least concerning. If your baby's heart rate comes back up on its own, that's actually a good sign that their nervous system is maturing!`
-                    },
-                    {
-                        title: "During Feeding",
-                        content: `Bradys during feeding are especially common because:`,
-                        list: [
-                            "Sucking, swallowing, and breathing coordination is still developing",
-                            "The vagus nerve (which affects heart rate) is stimulated during swallowing",
-                            "Reflux can trigger the vagal response",
-                            "Baby might be working too hard and needs pacing"
-                        ],
-                        successBox: `If bradys only happen during feeding, we often just need to slow down, pace the feeding, or try a different nipple flow. This typically improves with time and practice.`
-                    },
-                    {
-                        title: "When to Worry",
-                        warningBox: `While most bradys are harmless, notify your nurse if you notice:`,
-                        list: [
-                            "Sudden increase in frequency or severity",
-                            "Bradys requiring more intervention than usual",
-                            "Color changes (blue/pale) with bradys",
-                            "Bradys with no obvious trigger",
-                            "Pattern changes in your baby's usual brady behavior"
-                        ],
-                        content: `An increase in bradys can sometimes signal infection, anemia, or other issues that need attention. Your team tracks patterns, not just individual events.`
-                    }
-                ]
-            },
-            {
-                term: "Desaturation (Desat)",
-                pronunciation: "dee-sat-yur-AY-shun",
-                brief: "Oxygen levels drop temporarily - very common in preemies",
-                sections: [
-                    {
-                        title: "What It Is",
-                        content: `A desat occurs when your baby's oxygen saturation (O2 sats) drops below their target range. You'll see the number on the monitor drop and it usually turns blue or triggers an alarm. This is one of the most common events in the NICU, especially for preemies.`,
-                        normalRanges: {
-                            title: "Typical O2 Saturation Targets",
-                            items: [
-                                { label: "Room air babies", value: "92-100%" },
-                                { label: "Preemies <32 weeks", value: "88-95%" },
-                                { label: "Chronic lung disease", value: "90-95%" },
-                                { label: "Alarm usually set", value: "Below 85-88%" }
-                            ]
-                        }
-                    },
-                    {
-                        title: "Why Preemies Desat",
-                        content: `Premature lungs and breathing control centers are still developing. Think of it like learning to ride a bike - sometimes they forget to pedal. Common causes:`,
-                        list: [
-                            "Periodic breathing (normal preemie pattern with pauses)",
-                            "Shallow breathing during deep sleep",
-                            "Mucus or secretions blocking small airways",
-                            "Position affecting lung expansion",
-                            "Reflux causing brief airway protection",
-                            "Overstimulation or handling",
-                            "Often occurs with bradys (brady-desat spell)"
-                        ]
-                    },
-                    {
-                        title: "How We Respond",
-                        content: `Response depends on severity and baby's ability to recover:`,
-                        list: [
-                            "<strong>Wait and watch:</strong> Many self-resolve in seconds",
-                            "<strong>Gentle stimulation:</strong> Rubbing back or feet",
-                            "<strong>Reposition:</strong> Open airways, improve lung expansion",
-                            "<strong>Suction:</strong> If secretions are the issue",
-                            "<strong>Increase oxygen temporarily:</strong> Quick boost if needed",
-                            "<strong>Bag mask ventilation:</strong> Rarely needed for severe events"
-                        ],
-                        successBox: `Quick self-recovery is a great sign! If your baby's sats come back up quickly on their own or with minimal stimulation, their system is learning to self-regulate.`
-                    },
-                    {
-                        title: "The A's and B's (Apnea-Brady-Desat)",
-                        content: `You'll often hear about "A's and B's" or "spells" - these are combinations of apnea, bradycardia, and desaturation that often happen together:`,
-                        list: [
-                            "Baby stops breathing (apnea)",
-                            "Heart rate drops (brady)",
-                            "Oxygen levels fall (desat)",
-                            "Usually resolve together with stimulation"
-                        ],
-                        infoBox: `Having "spells" is so common in preemies that going 5-7 days spell-free is often a discharge requirement. They typically decrease as babies approach their due date.`
-                    },
-                    {
-                        title: "When It's Concerning",
-                        warningBox: `Alert your nurse about:`,
-                        list: [
-                            "Desats requiring increasing oxygen support",
-                            "Taking longer to recover than usual",
-                            "Happening more frequently",
-                            "Associated with color changes or limpness",
-                            "New pattern after being stable"
-                        ]
-                    }
-                ]
-            },
-            {
-                term: "Apnea",
-                pronunciation: "AP-nee-ah",
-                brief: "Pause in breathing for 20+ seconds - monitors catch it immediately",
-                sections: [
-                    {
-                        title: "What It Is",
-                        content: `Apnea is when your baby stops breathing for 20 seconds or more, OR a shorter pause that causes their heart rate or oxygen to drop. The monitors are extremely sensitive to this and will alarm immediately. There are three types:`,
-                        list: [
-                            "<strong>Central apnea:</strong> Brain forgets to tell lungs to breathe (most common in preemies)",
-                            "<strong>Obstructive apnea:</strong> Airway temporarily blocked",
-                            "<strong>Mixed apnea:</strong> Combination of both"
-                        ]
-                    },
-                    {
-                        title: "Apnea of Prematurity",
-                        content: `This is the most common type in the NICU. The breathing control center in premature brains is still developing. It's like having an unreliable breathing autopilot that occasionally switches off. This is:`,
-                        list: [
-                            "Expected in babies born before 34 weeks",
-                            "More common during deep sleep",
-                            "Usually outgrown by 36-37 weeks gestational age",
-                            "Treated with caffeine (yes, baby coffee!)",
-                            "Different from adult sleep apnea"
-                        ],
-                        successBox: `Apnea of prematurity is NOT a sign something is wrong with your baby - it's a normal developmental stage that they WILL outgrow.`
-                    },
-                    {
-                        title: "How It's Monitored",
-                        content: `NICU monitors are incredibly sensitive to breathing patterns:`,
-                        list: [
-                            "Chest leads detect breathing movements",
-                            "Pulse oximeter tracks oxygen levels",
-                            "Some babies have additional breathing sensors",
-                            "Alarms sound within seconds of apnea",
-                            "Staff can see patterns and trends"
-                        ]
-                    },
-                    {
-                        title: "Treatment Approaches",
-                        content: `Treatment depends on frequency and severity:`,
-                        list: [
-                            "<strong>Caffeine therapy:</strong> Standard treatment, works like coffee for adults",
-                            "<strong>Positioning:</strong> Slight head elevation, side-lying",
-                            "<strong>Temperature control:</strong> Being too warm increases apnea",
-                            "<strong>CPAP/breathing support:</strong> Helps keep airways open",
-                            "<strong>Treating reflux:</strong> If that's a trigger"
-                        ],
-                        infoBox: `Fun fact: Caffeine is one of the most studied and safest medications in the NICU. Your baby is essentially getting a very controlled coffee habit that we'll wean before discharge!`
-                    },
-                    {
-                        title: "Going Home with Apnea",
-                        content: `Most babies must be apnea-free for 5-7 days before discharge. Sometimes babies go home on:`,
-                        list: [
-                            "Apnea monitors (different from owlet-type monitors)",
-                            "Caffeine medication",
-                            "Specific positioning requirements"
-                        ],
-                        warningBox: `Home apnea monitors are medical devices, not commercial baby monitors. If your baby needs one, you'll receive thorough training before discharge.`
-                    }
-                ]
-            },
-            {
-                term: "Residuals",
-                pronunciation: "ree-ZID-you-als",
-                brief: "Leftover milk in stomach at next feeding - helps assess feeding tolerance",
-                sections: [
-                    {
-                        title: "What Are Residuals",
-                        content: `Residuals are the amount of milk/formula left in your baby's stomach when it's time for the next feeding. Nurses check this by gently pulling back on the feeding tube with a syringe before feeds. It's like checking if your baby finished their last meal before serving the next one.`,
-                        normalRanges: {
-                            title: "What's Considered Normal",
-                            items: [
-                                { label: "Clear/mucusy", value: "Usually not counted" },
-                                { label: "Small amounts", value: "<10-20% of feed" },
-                                { label: "Half-digested", value: "Normal if small volume" },
-                                { label: "Concerning", value: ">50% of previous feed" }
-                            ]
-                        }
-                    },
-                    {
-                        title: "Why We Check Them",
-                        content: `Residuals help us understand how well your baby is digesting:`,
-                        list: [
-                            "Indicates if stomach is emptying properly",
-                            "Helps prevent overfeeding",
-                            "Can signal feeding intolerance",
-                            "Guides feeding advancement decisions",
-                            "May indicate illness if suddenly increased"
-                        ],
-                        infoBox: `Not all NICUs check residuals routinely anymore. Research shows that small residuals are often normal and checking too frequently might actually delay feeding advancement.`
-                    },
-                    {
-                        title: "What Affects Residuals",
-                        content: `Many normal things can cause increased residuals:`,
-                        list: [
-                            "<strong>Position:</strong> Lying flat vs. elevated",
-                            "<strong>Feed type:</strong> Breast milk digests faster than formula",
-                            "<strong>Feed method:</strong> Continuous vs. bolus feeds",
-                            "<strong>Medications:</strong> Some meds slow digestion",
-                            "<strong>CPAP/breathing support:</strong> Can push air into stomach",
-                            "<strong>Normal variation:</strong> Some babies are just slow digesters"
-                        ]
-                    },
-                    {
-                        title: "When Residuals Matter",
-                        warningBox: `Concerning residual patterns include:`,
-                        list: [
-                            "Sudden increase in amount",
-                            "Bilious (green/yellow) color",
-                            "Blood-tinged residuals",
-                            "Associated with distended (swollen) belly",
-                            "Baby showing other signs of illness"
-                        ],
-                        content: `One high residual usually just means holding one feed or reducing volume temporarily. Persistent issues might need more investigation.`
-                    },
-                    {
-                        title: "What Happens Next",
-                        content: `Based on residuals, the team might:`,
-                        list: [
-                            "Replace the residual (put it back) if small",
-                            "Hold a feed to let stomach empty",
-                            "Reduce feed volume temporarily",
-                            "Switch to continuous feeds",
-                            "Order an X-ray if concerned",
-                            "Try different positioning"
-                        ],
-                        successBox: `Remember: Having some residuals doesn't mean your baby can't eat or isn't tolerating feeds. It's just one piece of information we use to optimize their feeding plan.`
-                    }
-                ]
-            },
-            {
-                term: "NPO Status",
-                pronunciation: "en-pee-oh (or 'nothing by mouth')",
-                brief: "Nothing by mouth - baby temporarily can't have feeds",
-                sections: [
-                    {
-                        title: "What NPO Means",
-                        content: `NPO is Latin for "nil per os" meaning nothing by mouth. When your baby is NPO, they cannot have any milk or formula through their mouth or feeding tube. This is temporary and done for specific medical reasons. During NPO, babies receive nutrition through IV (TPN/lipids).`
-                    },
-                    {
-                        title: "Common Reasons for NPO",
-                        content: `Babies are made NPO to protect them during certain situations:`,
-                        list: [
-                            "<strong>Before procedures/surgery:</strong> Empty stomach reduces risks",
-                            "<strong>Bowel rest:</strong> Suspected NEC or intestinal issues",
-                            "<strong>Severe reflux/aspiration risk:</strong> Protecting airways",
-                            "<strong>Feeding intolerance:</strong> Multiple high residuals or distention",
-                            "<strong>Respiratory distress:</strong> Severe breathing problems",
-                            "<strong>Medication administration:</strong> Some meds require empty stomach"
-                        ]
-                    },
-                    {
-                        title: "What Happens During NPO",
-                        content: `Your baby's needs are still met:`,
-                        list: [
-                            "IV nutrition (TPN) provides calories and proteins",
-                            "IV lipids provide essential fats",
-                            "Electrolytes and vitamins given through IV",
-                            "Comfort measures like pacifiers still encouraged",
-                            "Mouth care provided for comfort",
-                            "Pumped breast milk saved for when feeding resumes"
-                        ],
-                        successBox: `Being NPO doesn't mean setback - sometimes bowel rest is exactly what your baby needs to heal and ultimately feed better.`
-                    },
-                    {
-                        title: "Restarting Feeds",
-                        content: `When it's safe to feed again, we restart slowly:`,
-                        list: [
-                            "Usually start with small 'trophic' feeds",
-                            "Gradually increase volume over days",
-                            "Watch for tolerance signs",
-                            "May use different milk/formula",
-                            "Position and feeding method might change"
-                        ],
-                        infoBox: `The gut needs stimulation to develop properly, so we restart feeds as soon as it's safe. Even tiny amounts of milk help the intestines mature.`
-                    }
-                ]
-            },
-            {
-                term: "CPAP/BiPAP",
-                pronunciation: "SEE-pap / BY-pap",
-                brief: "Breathing support that helps keep lungs open - not the same as ventilator",
-                sections: [
-                    {
-                        title: "What CPAP Is",
-                        content: `CPAP (Continuous Positive Airway Pressure) delivers a constant flow of air pressure to keep your baby's lungs open between breaths. Think of it like blowing up a balloon partially and keeping it inflated - it's easier to blow it up more than starting from flat. Your baby is doing ALL their own breathing; CPAP just makes it easier.`,
-                        infoBox: `CPAP is NOT a ventilator - your baby breathes entirely on their own. It's like the difference between someone carrying you up stairs (ventilator) versus giving you a handrail to hold (CPAP).`
-                    },
-                    {
-                        title: "How CPAP Helps",
-                        content: `CPAP supports premature or stressed lungs by:`,
-                        list: [
-                            "Keeping tiny air sacs (alveoli) open",
-                            "Reducing work of breathing",
-                            "Improving oxygen exchange",
-                            "Preventing lung collapse between breaths",
-                            "Helping lungs develop and mature",
-                            "Treating apnea of prematurity"
-                        ]
-                    },
-                    {
-                        title: "BiPAP Differences",
-                        content: `BiPAP (Bilevel Positive Airway Pressure) provides two pressure levels:`,
-                        list: [
-                            "Higher pressure when baby breathes in",
-                            "Lower pressure when baby breathes out",
-                            "More comfortable for some babies",
-                            "Better for babies needing more support",
-                            "Step between CPAP and ventilator"
-                        ]
-                    },
-                    {
-                        title: "The Equipment",
-                        content: `CPAP can be delivered different ways:`,
-                        list: [
-                            "<strong>Nasal prongs:</strong> Small tubes in nostrils (most common)",
-                            "<strong>Nasal mask:</strong> Covers nose only",
-                            "<strong>RAM cannula:</strong> Softer nasal interface",
-                            "<strong>Bubble CPAP:</strong> Uses water bubbles for pressure"
-                        ],
-                        warningBox: `CPAP interfaces can cause temporary marks or redness on the nose. Nurses regularly adjust positioning to minimize this. Any marks typically fade quickly after CPAP is discontinued.`
-                    },
-                    {
-                        title: "Living with CPAP",
-                        content: `What to expect while your baby is on CPAP:`,
-                        list: [
-                            "Baby might seem puffy (air in stomach is common)",
-                            "Feeding usually continues on CPAP",
-                            "Holding is often possible with help",
-                            "Baby can still cry and make noise",
-                            "Suctioning needed more frequently",
-                            "Weaning is gradual as lungs strengthen"
-                        ],
-                        successBox: `Many babies go straight from CPAP to room air! Being on CPAP doesn't mean a long NICU stay - some babies just need that extra support while their lungs catch up.`
-                    }
-                ]
-            },
-            {
-                term: "Tachypnea",
-                pronunciation: "tak-IP-nee-ah",
-                brief: "Breathing too fast - body's way of getting more oxygen",
-                sections: [
-                    {
-                        title: "What It Is",
-                        content: `Tachypnea means your baby is breathing faster than normal. You might see their chest moving rapidly or notice them working harder to breathe. It's the body's way of trying to get more oxygen or blow off carbon dioxide.`,
-                        normalRanges: {
-                            title: "Breathing Rate Ranges",
-                            items: [
-                                { label: "Normal newborn", value: "30-60 breaths/min" },
-                                { label: "Mild tachypnea", value: "60-80 breaths/min" },
-                                { label: "Moderate", value: "80-100 breaths/min" },
-                                { label: "Severe", value: ">100 breaths/min" }
-                            ]
-                        }
-                    },
-                    {
-                        title: "Common Causes",
-                        content: `Fast breathing can be due to:`,
-                        list: [
-                            "<strong>TTN (Transient Tachypnea of Newborn):</strong> Extra fluid in lungs after birth",
-                            "<strong>RDS:</strong> Premature lungs lacking surfactant",
-                            "<strong>Infection:</strong> Body's response to illness",
-                            "<strong>Overheating:</strong> Babies cool themselves by breathing",
-                            "<strong>Pain or stress:</strong> Normal response to discomfort",
-                            "<strong>Metabolic issues:</strong> Blood sugar or acid-base imbalances"
-                        ],
-                        infoBox: `Some tachypnea is normal! Babies often breathe fast during active sleep, after crying, or when excited. Sustained tachypnea is what we monitor.`
-                    },
-                    {
-                        title: "Signs of Work of Breathing",
-                        content: `Along with fast breathing, watch for:`,
-                        list: [
-                            "<strong>Retractions:</strong> Pulling in around ribs/chest",
-                            "<strong>Nasal flaring:</strong> Nostrils widening with breaths",
-                            "<strong>Grunting:</strong> Noise with exhaling",
-                            "<strong>Head bobbing:</strong> Using neck muscles to breathe",
-                            "<strong>Color changes:</strong> Pale or bluish tint"
-                        ]
-                    },
-                    {
-                        title: "How We Help",
-                        content: `Treatment depends on the cause:`,
-                        list: [
-                            "Oxygen support if levels are low",
-                            "CPAP to reduce work of breathing",
-                            "Temperature adjustment if overheated",
-                            "Treating underlying cause (antibiotics, surfactant)",
-                            "Time for TTN to resolve (usually 24-72 hours)"
-                        ],
-                        successBox: `Mild tachypnea without other symptoms often resolves on its own. If your baby is eating well and oxygen levels are good, fast breathing alone isn't always concerning.`
-                    }
-                ]
-            },
-            {
-                term: "Retractions",
-                pronunciation: "ree-TRAK-shuns",
-                brief: "Pulling in around ribs when breathing - sign of increased effort",
-                sections: [
-                    {
-                        title: "What Retractions Look Like",
-                        content: `Retractions are when you see the skin pull inward around your baby's ribs, between ribs, or above/below the chest bone when they breathe. It's like watching someone suck in their stomach, but it happens with each breath. This shows your baby is working harder than normal to breathe.`
-                    },
-                    {
-                        title: "Types and Severity",
-                        content: `Different locations indicate different levels of work:`,
-                        list: [
-                            "<strong>Subcostal:</strong> Below the rib cage (mild)",
-                            "<strong>Intercostal:</strong> Between the ribs (moderate)",
-                            "<strong>Suprasternal:</strong> Above the breastbone (more severe)",
-                            "<strong>Substernal:</strong> Below the breastbone (more severe)",
-                            "<strong>Supraclavicular:</strong> Above the collarbones (severe)"
-                        ],
-                        warningBox: `The more areas showing retractions, the harder your baby is working. Multiple sites need immediate attention.`
-                    },
-                    {
-                        title: "What Causes Retractions",
-                        content: `Anything that makes breathing harder can cause retractions:`,
-                        list: [
-                            "Respiratory Distress Syndrome (RDS)",
-                            "Pneumonia or infection",
-                            "Fluid in the lungs",
-                            "Airway obstruction (mucus, positioning)",
-                            "Lung collapse (atelectasis)",
-                            "Being off breathing support too early"
-                        ]
-                    },
-                    {
-                        title: "How We Address Them",
-                        content: `Treatment focuses on reducing work of breathing:`,
-                        list: [
-                            "Repositioning for better lung expansion",
-                            "Suctioning if secretions are the issue",
-                            "Oxygen support",
-                            "CPAP or other breathing support",
-                            "Treating underlying cause"
-                        ],
-                        successBox: `Mild retractions that improve with positioning or minimal support are common in preemies. As lungs mature, breathing becomes easier and retractions disappear.`
-                    }
-                ]
-            },
-            {
-                term: "Infiltrate",
-                pronunciation: "IN-fil-trayt",
-                brief: "IV leaked into tissue - causes swelling that needs monitoring",
-                sections: [
-                    {
-                        title: "What an Infiltrate Is",
-                        content: `An infiltrate occurs when IV fluid leaks out of the vein and into surrounding tissue. You'll notice swelling, puffiness, or tightness around the IV site. While common in tiny NICU veins, infiltrates need quick attention to prevent tissue damage.`,
-                        warningBox: `If you notice swelling around your baby's IV, alert the nurse immediately. Early detection prevents complications.`
-                    },
-                    {
-                        title: "Why It Happens",
-                        content: `NICU babies are prone to infiltrates because:`,
-                        list: [
-                            "Veins are incredibly tiny and fragile",
-                            "Limited IV site options",
-                            "Movement can dislodge IV catheters",
-                            "Some medications irritate veins",
-                            "IVs may be in place for extended periods",
-                            "Blood vessel walls are more permeable"
-                        ]
-                    },
-                    {
-                        title: "Signs to Watch For",
-                        content: `Infiltrates develop gradually:`,
-                        list: [
-                            "Swelling around IV site",
-                            "Skin looks tight or shiny",
-                            "Cool to touch (or warm if infected)",
-                            "Blanching (white appearance) of skin",
-                            "Baby showing discomfort with touch",
-                            "IV pump alarming frequently"
-                        ]
-                    },
-                    {
-                        title: "Treatment Approach",
-                        content: `Quick action minimizes problems:`,
-                        list: [
-                            "IV removed immediately",
-                            "Elevation of affected limb",
-                            "Warm or cool compresses (depends on what infiltrated)",
-                            "Measurement and monitoring of swelling",
-                            "Photos for documentation",
-                            "Special creams for certain medication infiltrates",
-                            "Pain management if needed"
-                        ],
-                        infoBox: `Most infiltrates resolve completely within 24-48 hours with no lasting effects. Severe infiltrates from certain medications may need specialized treatment.`
-                    },
-                    {
-                        title: "Prevention Efforts",
-                        content: `NICU staff work to prevent infiltrates by:`,
-                        list: [
-                            "Checking IV sites hourly",
-                            "Securing IVs carefully",
-                            "Using arm boards for stability",
-                            "Rotating IV sites when possible",
-                            "Diluting irritating medications",
-                            "Using central lines for harsh medications"
-                        ],
-                        successBox: `Having an infiltrate doesn't mean anyone did anything wrong - it's an unfortunate reality of tiny veins and necessary medications.`
-                    }
-                ]
-            },
-            {
-                term: "Surfactant",
-                pronunciation: "sir-FAK-tant",
-                brief: "Lung lubricant that helps air sacs stay open - often given to preemies",
-                sections: [
-                    {
-                        title: "What Surfactant Is",
-                        content: `Surfactant is a soapy substance that coats the inside of lungs, preventing the tiny air sacs (alveoli) from sticking together. Think of it like spray oil in a muffin tin - without it, everything sticks. Babies start making surfactant around 26 weeks gestation but don't have enough until about 35 weeks.`,
-                        infoBox: `Fun fact: The development of artificial surfactant in the 1990s dramatically improved survival rates for premature babies!`
-                    },
-                    {
-                        title: "Why Preemies Need It",
-                        content: `Without enough surfactant:`,
-                        list: [
-                            "Air sacs collapse with each breath",
-                            "Baby works harder to reinflate lungs",
-                            "Less oxygen gets absorbed",
-                            "Respiratory Distress Syndrome (RDS) develops",
-                            "Risk of long-term lung damage increases"
-                        ]
-                    },
-                    {
-                        title: "How It's Given",
-                        content: `Surfactant administration process:`,
-                        list: [
-                            "Given through breathing tube directly into lungs",
-                            "Baby positioned to distribute medicine evenly",
-                            "Often given in delivery room or shortly after",
-                            "May need multiple doses",
-                            "Quick procedure (few minutes)",
-                            "Improvement often visible within hours"
-                        ],
-                        successBox: `Many babies show dramatic improvement after surfactant - better oxygen levels, less work of breathing, and ability to wean ventilator settings.`
-                    },
-                    {
-                        title: "Natural vs. Artificial",
-                        content: `Types of surfactant used:`,
-                        list: [
-                            "<strong>Natural surfactant:</strong> Derived from animal lungs (cow or pig)",
-                            "<strong>Synthetic surfactant:</strong> Lab-created version",
-                            "Both work well, natural slightly more effective",
-                            "Choice depends on availability and protocols"
-                        ]
-                    },
-                    {
-                        title: "After Surfactant",
-                        content: `What to expect:`,
-                        list: [
-                            "Brief increase in oxygen needs (normal)",
-                            "Secretions might increase temporarily",
-                            "Gradual improvement over 24-48 hours",
-                            "May need breathing support while lungs heal",
-                            "Some babies need repeat doses",
-                            "Long-term outcomes generally excellent"
-                        ],
-                        infoBox: `Surfactant replacement is one of the most successful NICU interventions. It's turned what was once a life-threatening condition into a manageable one.`
-                    }
-                ]
-            },
-            {
-                term: "PDA (Patent Ductus Arteriosus)",
-                pronunciation: "PAY-tent DUK-tus ar-teer-ee-OH-sus",
-                brief: "Blood vessel that should close after birth stays open - common in preemies",
-                sections: [
-                    {
-                        title: "What a PDA Is",
-                        content: `The ductus arteriosus is a blood vessel that connects two major arteries near the heart. It's supposed to be open in the womb (that's normal!) but should close within days after birth. When it stays open, it's called 'patent' (meaning open). This is very common in premature babies.`,
-                        infoBox: `In the womb, this vessel bypasses the lungs since baby gets oxygen from mom. After birth, when lungs take over, this bypass should close.`
-                    },
-                    {
-                        title: "Why It Matters",
-                        content: `An open PDA can cause:`,
-                        list: [
-                            "Extra blood flow to the lungs",
-                            "Heart working harder than necessary",
-                            "Fluid buildup in lungs",
-                            "Difficulty weaning from breathing support",
-                            "Feeding intolerance",
-                            "Blood flow 'stealing' from other organs"
-                        ],
-                        successBox: `Many small PDAs close on their own without treatment! The more premature the baby, the longer it might take.`
-                    },
-                    {
-                        title: "How We Detect It",
-                        content: `Signs of a PDA include:`,
-                        list: [
-                            "<strong>Heart murmur:</strong> Whooshing sound doctors hear",
-                            "<strong>Bounding pulses:</strong> Strong pulse in baby's limbs",
-                            "<strong>Echocardiogram:</strong> Ultrasound confirms and measures PDA",
-                            "<strong>Wide blood pressure:</strong> Bigger gap between top/bottom numbers",
-                            "<strong>Breathing issues:</strong> Harder to wean oxygen"
-                        ]
-                    },
-                    {
-                        title: "Treatment Options",
-                        content: `Approach depends on size and symptoms:`,
-                        list: [
-                            "<strong>Wait and watch:</strong> Small PDAs often close spontaneously",
-                            "<strong>Fluid restriction:</strong> Reduces strain on heart",
-                            "<strong>Medications:</strong> Indomethacin or ibuprofen to encourage closure",
-                            "<strong>Surgery:</strong> Ligation (tying off) if meds don't work",
-                            "<strong>Catheter procedure:</strong> Less invasive closure option"
-                        ],
-                        warningBox: `Treatment decisions balance the PDA's effects against intervention risks. Not every PDA needs treatment.`
-                    },
-                    {
-                        title: "Living with a PDA",
-                        content: `While PDA is being managed:`,
-                        list: [
-                            "Extra monitoring of heart rate and breathing",
-                            "Possible fluid restrictions",
-                            "Slower feeding advancement",
-                            "May need more breathing support",
-                            "Regular echo checks to track size",
-                            "Most resolve before discharge"
-                        ],
-                        infoBox: `Even babies who need surgery for PDA typically do very well with no long-term heart issues!`
-                    }
-                ]
-            },
-            {
-                term: "ROP (Retinopathy of Prematurity)",
-                pronunciation: "R-O-P or ret-in-AH-path-ee",
-                brief: "Abnormal blood vessel growth in premature eyes - carefully monitored",
-                sections: [
-                    {
-                        title: "What ROP Is",
-                        content: `ROP occurs when blood vessels in the retina (back of the eye) don't develop normally. In premature babies, these vessels haven't finished growing. After birth, they might grow abnormally, potentially affecting vision. This is why all preemies get regular eye exams.`,
-                        infoBox: `The more premature and smaller the baby, the higher the risk for ROP. Almost all babies under 1500g (3.3 lbs) are screened.`
-                    },
-                    {
-                        title: "Risk Factors",
-                        content: `Factors that increase ROP risk:`,
-                        list: [
-                            "Birth before 30 weeks gestation",
-                            "Birth weight under 1500 grams",
-                            "Oxygen exposure (necessary but monitored)",
-                            "Respiratory distress",
-                            "Infections",
-                            "Blood transfusions",
-                            "Overall illness severity"
-                        ]
-                    },
-                    {
-                        title: "The Eye Exams",
-                        content: `What to expect during ROP screening:`,
-                        list: [
-                            "First exam usually 4-6 weeks after birth",
-                            "Eye drops to dilate pupils",
-                            "Ophthalmologist examines with special equipment",
-                            "Baby may be fussy afterward (it's uncomfortable)",
-                            "Exams continue every 1-2 weeks until vessels mature",
-                            "Pain relief provided during exam"
-                        ],
-                        warningBox: `Eye exams are uncomfortable but crucial. Early detection and treatment can prevent vision loss.`
-                    },
-                    {
-                        title: "Stages of ROP",
-                        content: `ROP is classified by severity:`,
-                        list: [
-                            "<strong>Stage 1-2:</strong> Mild, often resolves on its own",
-                            "<strong>Stage 3:</strong> May need treatment",
-                            "<strong>Stage 4-5:</strong> Severe, requires intervention",
-                            "<strong>Plus disease:</strong> Twisted vessels, needs urgent treatment",
-                            "<strong>Zone location:</strong> Central vs. peripheral matters"
-                        ],
-                        successBox: `90% of ROP cases are mild and resolve without treatment! Only about 10% need intervention.`
-                    },
-                    {
-                        title: "Treatment If Needed",
-                        content: `Treatment options include:`,
-                        list: [
-                            "<strong>Laser therapy:</strong> Most common, stops abnormal growth",
-                            "<strong>Anti-VEGF injections:</strong> Newer treatment option",
-                            "<strong>Surgery:</strong> For advanced cases",
-                            "Treatment timing is critical",
-                            "Usually outpatient procedure",
-                            "Excellent success rates when caught early"
-                        ],
-                        infoBox: `Even babies who need ROP treatment usually have good vision outcomes. Glasses might be needed, but severe vision loss is rare with proper screening and treatment.`
-                    }
-                ]
-            },
-            {
-                term: "BPD (Bronchopulmonary Dysplasia)",
-                pronunciation: "BRON-ko-pul-mon-air-ee dis-PLAY-zhuh",
-                brief: "Chronic lung disease in preemies - lungs need extra time to heal",
-                sections: [
-                    {
-                        title: "What BPD Is",
-                        content: `BPD is a form of chronic lung disease that develops when premature lungs are injured by ventilation, oxygen, or inflammation. Think of it as lungs that are healing but scarred. These babies need breathing support longer but can still have good outcomes with time and growth.`,
-                        infoBox: `BPD is defined as needing oxygen support at 36 weeks corrected gestational age. It doesn't mean permanent lung damage!`
-                    },
-                    {
-                        title: "Why It Develops",
-                        content: `Multiple factors contribute to BPD:`,
-                        list: [
-                            "Premature lungs aren't ready for air breathing",
-                            "Ventilator pressure (though necessary) can cause injury",
-                            "Oxygen (though life-saving) can damage tissue",
-                            "Infections increase inflammation",
-                            "Fluid in lungs from PDA or other issues",
-                            "Nutritional deficiencies affecting healing"
-                        ],
-                        warningBox: `BPD is NOT anyone's fault. The same treatments that save extremely premature babies can contribute to BPD - it's a trade-off for survival.`
-                    },
-                    {
-                        title: "What BPD Looks Like",
-                        content: `Babies with BPD typically:`,
-                        list: [
-                            "Need oxygen longer than expected",
-                            "Work harder to breathe",
-                            "Have trouble with feeding (breathing takes energy)",
-                            "Gain weight slowly",
-                            "Have good days and bad days",
-                            "May need diuretics for fluid management",
-                            "Are more sensitive to respiratory infections"
-                        ]
-                    },
-                    {
-                        title: "Treatment Approach",
-                        content: `Managing BPD is a marathon, not a sprint:`,
-                        list: [
-                            "<strong>Gentle ventilation:</strong> Lowest pressures possible",
-                            "<strong>Optimal nutrition:</strong> Extra calories for growth and healing",
-                            "<strong>Diuretics:</strong> Help remove extra fluid",
-                            "<strong>Steroids:</strong> Sometimes used to reduce inflammation",
-                            "<strong>Oxygen:</strong> Enough to support growth, not necessarily 100% saturation",
-                            "<strong>Time:</strong> Lungs improve with growth"
-                        ],
-                        successBox: `Most babies with BPD outgrow it! New healthy lung tissue grows as your baby grows. Many are off oxygen by their first birthday.`
-                    },
-                    {
-                        title: "Going Home with BPD",
-                        content: `Many BPD babies go home on:`,
-                        list: [
-                            "Low-flow oxygen through nasal cannula",
-                            "Pulse oximeter for monitoring",
-                            "Medications (diuretics, inhalers)",
-                            "Extra calories in feeds",
-                            "RSV prevention (Synagis shots)",
-                            "Close follow-up with pulmonology"
-                        ],
-                        infoBox: `Going home on oxygen doesn't mean permanent oxygen! Most babies wean off within months as their lungs grow and heal.`
-                    }
-                ]
-            },
-            {
-                term: "NEC (Necrotizing Enterocolitis)",
-                pronunciation: "neck or N-E-C",
-                brief: "Serious intestinal condition - why we monitor feeding tolerance closely",
-                sections: [
-                    {
-                        title: "What NEC Is",
-                        content: `NEC is a serious condition where portions of the intestine become inflamed and can die. It's one of the most feared complications in the NICU, primarily affecting premature infants. While scary, early detection and treatment lead to good outcomes for most babies.`,
-                        warningBox: `NEC is a medical emergency. If your team suspects NEC, quick action is essential. Trust that aggressive treatment early prevents serious complications.`
-                    },
-                    {
-                        title: "Risk Factors",
-                        content: `NEC risk is highest in:`,
-                        list: [
-                            "Babies born before 32 weeks",
-                            "Very low birth weight infants",
-                            "Formula feeding (though can occur with breast milk)",
-                            "Babies with reduced intestinal blood flow",
-                            "After blood transfusions",
-                            "Babies with infections"
-                        ],
-                        infoBox: `Breast milk significantly reduces NEC risk, which is why even small amounts are so valuable for preemies.`
-                    },
-                    {
-                        title: "Warning Signs We Watch",
-                        content: `Early NEC symptoms include:`,
-                        list: [
-                            "Feeding intolerance (increased residuals)",
-                            "Abdominal distension (swollen belly)",
-                            "Blood in stool (visible or hidden)",
-                            "Increased apnea/bradycardia",
-                            "Temperature instability",
-                            "Lethargy or irritability",
-                            "Green bile in residuals"
-                        ]
-                    },
-                    {
-                        title: "How It's Diagnosed",
-                        content: `If NEC is suspected:`,
-                        list: [
-                            "Feeding stopped immediately (NPO)",
-                            "Abdominal X-rays (looking for air patterns)",
-                            "Blood tests for infection/inflammation",
-                            "Serial exams to track progression",
-                            "Surgical consultation if severe"
-                        ]
-                    },
-                    {
-                        title: "Treatment Approach",
-                        content: `NEC treatment depends on severity:`,
-                        list: [
-                            "<strong>Medical management (most cases):</strong>",
-                            "- NPO for bowel rest (7-14 days)",
-                            "- IV nutrition (TPN)",
-                            "- Antibiotics",
-                            "- Frequent monitoring",
-                            "- Decompression (tube to relieve pressure)",
-                            "<strong>Surgical intervention (severe cases):</strong>",
-                            "- Removal of damaged intestine",
-                            "- Possible temporary ostomy"
-                        ],
-                        successBox: `Most babies with NEC (70-80%) recover with medical treatment alone. Even babies needing surgery usually do well long-term.`
-                    },
-                    {
-                        title: "After NEC",
-                        content: `Recovery process:`,
-                        list: [
-                            "Slow, careful reintroduction of feeds",
-                            "Usually start with breast milk if available",
-                            "Watch closely for tolerance",
-                            "May need special formula",
-                            "Growth might slow temporarily",
-                            "Long-term outcomes usually good"
-                        ],
-                        infoBox: `Having had NEC doesn't mean lasting problems. Most babies go on to eat and grow normally once healed.`
-                    }
-                ]
-            },
-            {
-                term: "IVH (Intraventricular Hemorrhage)",
-                pronunciation: "I-V-H or brain bleed",
-                brief: "Bleeding in brain's ventricles - common in very premature babies",
-                sections: [
-                    {
-                        title: "What IVH Is",
-                        content: `IVH is bleeding into or around the fluid-filled spaces (ventricles) in the brain. It occurs in about 20-25% of babies born before 30 weeks. The fragile blood vessels in premature brains can rupture, especially in the first few days of life. While concerning, many babies with IVH have good outcomes.`,
-                        infoBox: `Most IVH occurs in the first 72 hours of life, which is why early head ultrasounds are routine for very premature babies.`
-                    },
-                    {
-                        title: "Grading System",
-                        content: `IVH is classified by severity:`,
-                        list: [
-                            "<strong>Grade 1:</strong> Small bleed in germinal matrix only (mildest)",
-                            "<strong>Grade 2:</strong> Blood in ventricles but no enlargement",
-                            "<strong>Grade 3:</strong> Blood in ventricles with enlargement",
-                            "<strong>Grade 4:</strong> Bleeding into brain tissue (most severe)"
-                        ],
-                        successBox: `Grades 1 and 2 (the most common) usually resolve completely with no long-term effects!`
-                    },
-                    {
-                        title: "Why It Happens",
-                        content: `Premature babies are vulnerable because:`,
-                        list: [
-                            "Blood vessels in the brain are still developing",
-                            "Blood pressure fluctuations affect fragile vessels",
-                            "Lack of autoregulation (brain can't protect itself)",
-                            "Respiratory distress increases risk",
-                            "Rapid fluid shifts can trigger bleeding"
-                        ]
-                    },
-                    {
-                        title: "Detection and Monitoring",
-                        content: `How we watch for and track IVH:`,
-                        list: [
-                            "Routine head ultrasounds (days 3, 7, and 30)",
-                            "No symptoms in mild cases",
-                            "Severe bleeds might cause seizures or lethargy",
-                            "Serial ultrasounds track resolution",
-                            "MRI before discharge if concerns"
-                        ],
-                        warningBox: `Parents can't cause or prevent IVH. It's a risk of prematurity, not something anyone did wrong.`
-                    },
-                    {
-                        title: "Treatment and Outcomes",
-                        content: `Management depends on grade:`,
-                        list: [
-                            "<strong>Grades 1-2:</strong> Observation only, usually resolve",
-                            "<strong>Grade 3:</strong> Monitor for hydrocephalus",
-                            "<strong>Grade 4:</strong> Close monitoring, possible interventions",
-                            "Physical therapy if needed",
-                            "Early intervention services",
-                            "Most babies have normal development"
-                        ],
-                        infoBox: `Even with Grade 3-4 IVH, many children have normal or near-normal development with early intervention and support.`
-                    },
-                    {
-                        title: "Long-term Follow-up",
-                        content: `After IVH:`,
-                        list: [
-                            "Regular developmental assessments",
-                            "Watch for hydrocephalus (fluid buildup)",
-                            "Early intervention if delays noted",
-                            "Most Grade 1-2 need no special services",
-                            "Higher grades may need therapy support",
-                            "Outcomes improve with early support"
-                        ]
-                    }
-                ]
-            }
-        ];
-
-        // Function to create term cards
-        function createTermCards() {
-            const container = document.getElementById('termsGrid');
-            
-            medicalTerms.forEach((term, index) => {
-                const card = document.createElement('div');
-                card.className = 'term-card';
-                card.onclick = () => openModal(index);
-                
-                card.innerHTML = `
-                    <h3>${term.term}</h3>
-                    <p class="brief">${term.brief}</p>
-                    <span class="click-hint">Click for details →</span>
-                `;
-                
-                container.appendChild(card);
-            });
-        }
-
-        // Function to open modal with term details
-        function openModal(termIndex) {
-            const term = medicalTerms[termIndex];
-            const modal = document.getElementById('termModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalPronunciation = document.getElementById('modalPronunciation');
-            const modalBody = document.getElementById('modalBody');
-            
-            modalTitle.textContent = term.term;
-            modalPronunciation.textContent = term.pronunciation ? `Pronounced: ${term.pronunciation}` : '';
-            
-            // Build modal content
-            let contentHTML = '';
-            
-            term.sections.forEach(section => {
-                contentHTML += '<div class="modal-section">';
-                contentHTML += `<h3>${section.title}</h3>`;
-                
-                if (section.content) {
-                    contentHTML += `<p>${section.content}</p>`;
-                }
-                
-                if (section.normalRanges) {
-                    contentHTML += '<div class="normal-ranges">';
-                    contentHTML += `<h4>${section.normalRanges.title}</h4>`;
-                    section.normalRanges.items.forEach(item => {
-                        contentHTML += `
-                            <div class="range-item">
-                                <span>${item.label}:</span>
-                                <strong>${item.value}</strong>
-                            </div>
-                        `;
-                    });
-                    contentHTML += '</div>';
-                }
-                
-                if (section.list) {
-                    contentHTML += '<ul>';
-                    section.list.forEach(item => {
-                        contentHTML += `<li>${item}</li>`;
-                    });
-                    contentHTML += '</ul>';
-                }
-                
-                if (section.infoBox) {
-                    contentHTML += `<div class="info-box">${section.infoBox}</div>`;
-                }
-                
-                if (section.warningBox) {
-                    contentHTML += `<div class="warning-box">${section.warningBox}</div>`;
-                }
-                
-                if (section.successBox) {
-                    contentHTML += `<div class="success-box">${section.successBox}</div>`;
-                }
-                
-                contentHTML += '</div>';
+        const mainContent = document.createElement('main');
+        mainContent.id = 'main-content';
+        mainContent.setAttribute('role', 'main');
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
             });
             
-            modalBody.innerHTML = contentHTML;
-            modal.classList.add('active');
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav buttons
+            const buttons = document.querySelectorAll('nav button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // Close modal functionality
-        document.querySelector('.close-button').onclick = function() {
-            document.getElementById('termModal').classList.remove('active');
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('termModal');
-            if (event.target == modal) {
-                modal.classList.remove('active');
+        
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const wasActive = item.classList.contains('active');
+            
+            // Close all accordion items in this accordion
+            const accordion = item.parentElement;
+            accordion.querySelectorAll('.accordion-item').forEach(accItem => {
+                accItem.classList.remove('active');
+                const accHeader = accItem.querySelector('.accordion-header');
+                accHeader.setAttribute('aria-expanded', 'false');
+            });
+            
+            // Toggle the clicked item
+            if (!wasActive) {
+                item.classList.add('active');
+                header.setAttribute('aria-expanded', 'true');
             }
         }
 
-        // Initialize on page load
-        createTermCards();
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleBackToTop() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        }
+
+        window.addEventListener('scroll', handleBackToTop);
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const sections = document.querySelectorAll('.section');
+        const noResults = document.getElementById('no-results');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                sections.forEach(section => {
+                    section.classList.remove('hidden');
+                    if (section.id === 'start-here') {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+                noResults.classList.remove('show');
+                
+                // Reset nav
+                document.querySelectorAll('nav button').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.textContent.includes('Start Here')) {
+                        btn.classList.add('active');
+                    }
+                });
+                return;
+            }
+
+            let hasResults = false;
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                const sectionHasMatch = text.includes(searchTerm);
+                
+                if (sectionHasMatch) {
+                    section.classList.remove('hidden');
+                    section.classList.add('active');
+                    hasResults = true;
+                } else {
+                    section.classList.remove('active');
+                    section.classList.add('hidden');
+                }
+            });
+
+            if (hasResults) {
+                noResults.classList.remove('show');
+            } else {
+                noResults.classList.add('show');
+            }
+
+            // Update nav to show all sections have results
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+        });
+
+        // Keyboard navigation for accordion
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleAccordion(this);
+                }
+            });
+        });
+
+        // Keyboard navigation for nav buttons
+        document.querySelectorAll('nav button').forEach(button => {
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
     </script>
 </body>
 </html>
